@@ -1,1 +1,1 @@
-sudo rmmod e1000
+sudo rmmod i82545
