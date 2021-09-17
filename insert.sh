@@ -1,2 +1,2 @@
-sudo insmod e1000.ko
+sudo insmod i82545.ko
 sudo dmesg

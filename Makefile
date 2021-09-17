@@ -1,1 +1,1 @@
-obj-m := netdev.o
+obj-m := i82545.o
