@@ -8,6 +8,9 @@ static const char i82545_copyright[] = "Copyright (c) 2021 Naftaly Avadiaev.";
 #define PCI_VENDOR_ID_INTEL 0x8086
 #define PCI_DEVICE_ID_82545 0x100f
 
+#define BAR0 0
+#define BAR1 1
+
 
 
 
