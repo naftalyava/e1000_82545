@@ -1,2 +1,2 @@
 sudo insmod i82545.ko
-sudo dmesg
+sudo dmesg -c
