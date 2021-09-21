@@ -1,7 +1,18 @@
 #include <linux/netdevice.h>
 #include <linux/skbuff.h>
 
-
+struct adapter {
+	struct net_device_stats stats;
+	struct pci_dev *pdev;
+	struct net_device *netdev;
+	u8 __iomem *hw_addr;
+	unsigned long io_base;
+	int bars;
+	unsigned long flags;
+	char name[256];
+	unsigned int min_mtu;
+	unsigned int max_mtu;
+};
 
 void netdev_open(struct net_device *dev);
 int netdev_release(struct net_device *dev);

@@ -64,5 +64,7 @@ void ndo_poll_controller(struct net_device *ndev)
 
 struct net_device_stats* ndo_get_stats(struct net_device *dev)
 {
+    struct adapter *adapter = netdev_priv(dev);
+    return &adapter->stats;
     return NULL;
 }

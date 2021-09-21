@@ -26,18 +26,6 @@ static struct pci_driver i82545_driver = {
 	.shutdown = shutdown,
 };
 
-struct adapter {
-	struct net_device_stats stats;
-	struct pci_dev *pdev;
-	struct net_device *netdev;
-	u8 __iomem *hw_addr;
-	unsigned long io_base;
-	int bars;
-	unsigned long flags;
-	char name[256];
-	unsigned int min_mtu;
-	unsigned int max_mtu;
-};
 
 
 static const struct net_device_ops nps_netdev_ops = {
