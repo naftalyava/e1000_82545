@@ -31,12 +31,18 @@ int netdev_tx(struct sk_buff *skb, struct net_device *dev)
 int ndo_open(struct net_device *netdev)
 {
     int retval = 0;
+
+    netif_start_queue(netdev);
+
     return retval;
 }
 
 int ndo_stop(struct net_device *netdev)
 {
     int retval = 0;
+
+    netif_stop_queue(netdev);
+
     return retval;
 }
 
@@ -66,5 +72,8 @@ struct net_device_stats* ndo_get_stats(struct net_device *dev)
 {
     struct adapter *adapter = netdev_priv(dev);
     return &adapter->stats;
+
+    
+
     return NULL;
 }

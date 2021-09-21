@@ -155,20 +155,12 @@ static void remove(struct pci_dev *pdev)
 	struct net_device *netdev = pci_get_drvdata(pdev);
 	struct adapter *adapter = netdev_priv(netdev);
 
-	
 
+	unregister_netdev(netdev);
 	pci_release_selected_regions(pdev, adapter->bars);
-
-	// why we crash here?
-	// unregister_netdev(netdev);
-
-	// iounmap(hw_addr);
-
-
-	// pci_release_selected_regions(pdev, bars);
-	// pci_disable_device(pdev);
-	// free_netdev(netdev);
+	iounmap(adapter->hw_addr);
 	pci_disable_device(pdev);
+	free_netdev(netdev);
 }
 
 static void shutdown(struct pci_dev *pdev)
