@@ -88,7 +88,7 @@ static int probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto probe_error;
 	}
 
-	netdev = alloc_netdev(sizeof(struct adapter), "net:%d", NET_NAME_ENUM, netdev_open);
+	netdev = alloc_netdev(sizeof(struct adapter), "net%d", NET_NAME_ENUM, netdev_open);
 	if (!netdev){
 		pr_err("alloc_netdev\n");
 		goto probe_error;
