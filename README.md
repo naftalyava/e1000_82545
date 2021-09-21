@@ -8,3 +8,4 @@ TODO:
 1. Make register_netdev succeed [V]
 2. Release resourced on rmmod, and make insmod and rmmod work on repeated calls. [V]
 3. Show at least MAC in ip a. [ ]
+4. Link up []
