@@ -27,6 +27,7 @@ static struct pci_driver i82545_driver = {
 };
 
 struct adapter {
+	struct net_device_stats stats;
 	struct pci_dev *pdev;
 	struct net_device *netdev;
 	u8 __iomem *hw_addr;
@@ -37,6 +38,21 @@ struct adapter {
 	unsigned int min_mtu;
 	unsigned int max_mtu;
 };
+
+
+static const struct net_device_ops nps_netdev_ops = {
+	.ndo_open               = ndo_open,
+	.ndo_stop               = ndo_stop,
+	.ndo_start_xmit         = ndo_start_xmit,
+	.ndo_set_mac_address    = ndo_set_mac_address,
+	.ndo_set_rx_mode        = ndo_set_rx_mode,
+	.ndo_get_stats          = ndo_get_stats,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= ndo_poll_controller,
+#endif
+};
+
+static int g_bars;
 
 /*
  * PCI related methods
@@ -50,11 +66,17 @@ static int probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	pr_info("probe\n");
 
+	if (!pdev){
+		pr_err("pdev == NULL!\n");
+		goto probe_error;
+	}
+
 	/* 
 	 * The Linux kernel assigns special memory regions “Base Address Registers” (BARs) to communicate with the hardware.
 	 * These memory addresses (addr + length) are written to the PCI controller hardware during the system boot.
 	 */
 	bars = pci_select_bars(pdev, IORESOURCE_MEM | IORESOURCE_IO);
+	g_bars = bars;
 
 	retval = pci_enable_device(pdev);
 	if (retval) {
@@ -78,12 +100,15 @@ static int probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto probe_error;
 	}
 
-	//netdev = alloc_netdev(sizeof(struct adapter), "net: %d", NET_NAME_ENUM, netdev_open);
-	netdev = alloc_etherdev(sizeof(struct adapter));
+	netdev = alloc_netdev(sizeof(struct adapter), "net:%d", NET_NAME_ENUM, netdev_open);
 	if (!netdev){
 		pr_err("alloc_netdev\n");
 		goto probe_error;
 	}
+
+	netdev->netdev_ops = &nps_netdev_ops;
+
+
 		
 
 
@@ -110,20 +135,18 @@ static int probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		}
 	}
 
-	netdev->flags |= IFF_NOARP;
-	netdev->features |= NETIF_F_HW_CSUM;
 
 
 
-
-	adapter->min_mtu = 46;
-	adapter->max_mtu = 1540;
+	// // adapter->min_mtu = 46;
+	// // adapter->max_mtu = 1540;
 
 
 
 
 
-	strcpy(adapter->name, "naftaly_eth%d");
+	//strcpy(netdev->name, "eth%d");
+	//pr_info("netdev->name: %s\n", netdev->name);
 	retval = register_netdev(netdev);
 	if (retval) {
 		pr_err("register_netdev\n");
@@ -144,18 +167,20 @@ static void remove(struct pci_dev *pdev)
 	struct net_device *netdev = pci_get_drvdata(pdev);
 	struct adapter *adapter = netdev_priv(netdev);
 
-	u8 __iomem *hw_addr = adapter->hw_addr;
-	int bars = adapter->bars;
+	
+
+	pci_release_selected_regions(pdev, adapter->bars);
 
 	// why we crash here?
-	//unregister_netdev(netdev);
+	// unregister_netdev(netdev);
 
-	iounmap(hw_addr);
+	// iounmap(hw_addr);
 
 
-	pci_release_selected_regions(pdev, bars);
+	// pci_release_selected_regions(pdev, bars);
+	// pci_disable_device(pdev);
+	// free_netdev(netdev);
 	pci_disable_device(pdev);
-	free_netdev(netdev);
 }
 
 static void shutdown(struct pci_dev *pdev)

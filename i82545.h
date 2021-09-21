@@ -1,7 +1,7 @@
 #ifndef _i82545_H_
 #define _i82545_H_
 
-char i82545_driver_name[] = "82545EM - Test Driver";
+char i82545_driver_name[] = "82545EM_Test Driver";
 static char i82545_driver_string[] = "82545EM NIC Driver";
 static const char i82545_copyright[] = "Copyright (c) 2021 Naftaly Avadiaev.";
 
