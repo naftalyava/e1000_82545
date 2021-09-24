@@ -1,11 +1,35 @@
 #include "netdev.h"
 
 
-
-
-void netdev_open(struct net_device *dev)
+static irqreturn_t interrupt(int irq, void *dev_id)
 {
+    pr_info("interrupt\n");
+    return IRQ_HANDLED;
+}
+
+
+void netdev_open(struct net_device *netdev)
+{
+    int retval = 0;
+
+    struct adapter *adapter = netdev_priv(netdev);
+
     pr_info("netdev_open\n");
+
+    netif_carrier_on(netdev);
+    
+    if (netif_carrier_ok(netdev)){
+        pr_info("netif_carrier_ok\n");
+    }
+
+    //netif_start_queue(netdev);
+
+    // if ((retval = request_irq(adapter->pdev->irq, interrupt, IRQF_SHARED, adapter->netdev->name, adapter->netdev))) {
+    //     pr_info("netdev_open: register interrupt failed!\n");
+    // }
+
+    //pr_info("netdev_open: register interrupt succeded!\n");
+
     return;
 }
 
@@ -31,6 +55,11 @@ int netdev_tx(struct sk_buff *skb, struct net_device *dev)
 int ndo_open(struct net_device *netdev)
 {
     int retval = 0;
+
+    pr_info("netdev_open\n");
+
+
+    netif_carrier_on(netdev);
 
     netif_start_queue(netdev);
 

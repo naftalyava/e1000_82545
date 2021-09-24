@@ -12,6 +12,10 @@ struct adapter {
 	char name[256];
 	unsigned int min_mtu;
 	unsigned int max_mtu;
+	int link_speed;
+	int link_duplex;
+
+	struct delayed_work watchdog_task;
 };
 
 void netdev_open(struct net_device *dev);
